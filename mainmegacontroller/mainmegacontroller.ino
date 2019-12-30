@@ -7,6 +7,7 @@ long int YELLOW = 0xFFFF00;
 long int BLUE = 0x0000FF;
 long int WHITE = 0xFFFFFF;
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+
 int outputPins[] = {
   //BlueLeft
   3,
