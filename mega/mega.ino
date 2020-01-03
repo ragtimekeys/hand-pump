@@ -63,7 +63,7 @@ void loop() {
   for (byte i = 0; i < 6; i++) {
     boolean lastValue = *s;
     *s = !digitalRead2(inputPins[i]);
-    if (*s == HIGH) {csezqeszezcqcqszezcscseece
+    if (*s == HIGH) {
       //high read for button
       /*
       */
