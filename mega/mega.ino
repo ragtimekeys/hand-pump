@@ -2,7 +2,7 @@
 #include <Adafruit_NeoPixel.h>
 #define LED_PIN    8
 #define LED_COUNT 60
-long int REDD = 0xFF0000;
+long int RED = 0xFF0000;
 long int YELLOW = 0xFFFF00;
 long int BLUE = 0x0000FF;
 long int WHITE = 0xFFFFFF;
@@ -25,8 +25,8 @@ int outputPins[] = {
 long int padColors[] = {
   BLUE,
   BLUE,
-  REDD,
-  REDD,
+  RED,
+  RED,
   YELLOW,
   WHITE
 };
@@ -42,7 +42,9 @@ long lastTimeSentSomething[] = {
   0, 0, 0, 0, 0, 0
 };
 boolean buttonState[6];
-long smallestTimeBetweenEvents = 20;
+//this was originally included for adding a debounce timer
+//but since I started using capacitors properly I don't need this
+//long smallestTimeBetweenEvents = 20;
 char str[4];
 void setup() {
   Serial.begin(115200);
@@ -52,7 +54,6 @@ void setup() {
     pinMode(inputPins[i], INPUT);
     pinMode(inputPins[i], INPUT_PULLUP);
   }
-//  Keyboard.begin();
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
@@ -65,9 +66,8 @@ void loop() {
     *s = !digitalRead2(inputPins[i]);
     if (*s == HIGH) {
       //high read for button
-      /*
-      */
-      if (lastValue != *s && now - lastTimeSentSomething[i] > smallestTimeBetweenEvents) {
+
+      if (lastValue != *s/* && now - lastTimeSentSomething[i] > smallestTimeBetweenEvents*/) {
         //buttonState[i] = !buttonState[i];
         Serial.print("button was pressed");
         Serial.print(i);
@@ -82,7 +82,7 @@ void loop() {
       }
     } else {
       //low read for button
-      if (lastValue != *s && now - lastTimeSentSomething[i] > smallestTimeBetweenEvents) {
+      if (lastValue != *s/* && now - lastTimeSentSomething[i] > smallestTimeBetweenEvents*/) {
         //buttonState[i] = !buttonState[i];
         Serial.print("button was released");
         Serial.print(i);
@@ -105,7 +105,7 @@ void loop() {
   }
   //make sure something is pressed at least
   bool isSomethingPressed = false;
-  for (int i = 0; i<6; i++) {
+  for (int i = 0; i < 6; i++) {
     if (buttonState[i] == HIGH) {
       isSomethingPressed = true;
     }
