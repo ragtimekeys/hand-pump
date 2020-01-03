@@ -38,7 +38,7 @@ int inputPins[] = {
   37,
   33
 };
-long lastTimeSentSomething[] = {
+long lastTimeStateChanged[] = {
   0, 0, 0, 0, 0, 0
 };
 boolean buttonState[6];
@@ -58,6 +58,7 @@ void setup() {
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
+
 void loop() {
   boolean *s = buttonState;
   long now = millis();
@@ -67,7 +68,7 @@ void loop() {
     if (*s == HIGH) {
       //high read for button
 
-      if (lastValue != *s/* && now - lastTimeSentSomething[i] > smallestTimeBetweenEvents*/) {
+      if (lastValue != *s/* && now - lastTimeStateChanged[i] > smallestTimeBetweenEvents*/) {
         //buttonState[i] = !buttonState[i];
         Serial.print("button was pressed");
         Serial.print(i);
@@ -78,18 +79,18 @@ void loop() {
         }
         strip.show();
         analogWrite(outputPins[i], 127);
-        lastTimeSentSomething[i] = now;
+        lastTimeStateChanged[i] = now;
       }
     } else {
       //low read for button
-      if (lastValue != *s/* && now - lastTimeSentSomething[i] > smallestTimeBetweenEvents*/) {
+      if (lastValue != *s/* && now - lastTimeStateChanged[i] > smallestTimeBetweenEvents*/) {
         //buttonState[i] = !buttonState[i];
         Serial.print("button was released");
         Serial.print(i);
         Serial.println("");
         Serial1.write(i + 6);
         analogWrite(outputPins[i], 0);
-        lastTimeSentSomething[i] = now;
+        lastTimeStateChanged[i] = now;
       }
     }
     s++;
@@ -97,7 +98,7 @@ void loop() {
   //we need to go through button state to find out what was the last pressed one
   int minimum, current, minI;
   for (int i = 0; i < 6; i++) {
-    current = lastTimeSentSomething[i];
+    current = lastTimeStateChanged[i];
     if (current < minimum) {
       minimum = current;
       minI = i;

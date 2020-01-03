@@ -1,35 +1,38 @@
-#include <Keyboard.h>
+/*
+  How to change name of arduino device:
+  https://github.com/MHeironimus/ArduinoJoystickLibrary/issues/14#issuecomment-263529830
+
+  using this library
+  https://github.com/MHeironimus/ArduinoJoystickLibrary
+*/
+
+#include <Joystick.h>
 
 
-int incomingByte = 0; // for incoming serial data
-//String letters = "zceqsx";
-int letters[] = {122, 99, 113, 101, 115, 120};
+Joystick_ Joystick;
+
+// for incoming serial data
+int incomingByte = 0;
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(115200);
   Serial1.begin(115200);
-  while (!Serial && millis()<2000)
-  {
-    // do nothing
-  } ;
-  Keyboard.begin();
+  while (!Serial && millis() < 2000) {};
+  Joystick.begin();
   Serial.println("Leonardo ready");
 }
 void loop() {
-  // put your main code here, to run repeatedly
   if (Serial1.available() > 0) {
     // read the incoming byte:
     incomingByte = Serial1.read();
-    //Keyboard.press("a");
-    //Keyboard.release("a");
-    // say what you got:
+    //key presses are sent from the MEGA as numbers less than 6
     if (incomingByte < 6) {
-      //this means it was a key press
-      Keyboard.press(letters[incomingByte]);
-    } else {
-      Keyboard.release(letters[incomingByte-6]);
+      Joystick.setButton(incomingByte, HIGH);
     }
-    Serial.print("I received: ");
+    //and >=6 for releases
+    else {
+      Joystick.setButton(incomingByte - 6, LOW);
+    }
+    Serial.print("Received from MEGA: ");
     Serial.println(incomingByte, DEC);
   }
 }
